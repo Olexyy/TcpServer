@@ -1,0 +1,2 @@
+/TCPServerForm/TCPServerForm/bin/
+/TCPServerForm/TCPServerForm/obj/
