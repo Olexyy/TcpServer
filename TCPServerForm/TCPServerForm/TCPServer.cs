@@ -137,7 +137,7 @@ namespace System.Net.Sockets {
         private void NewThread() {
             if (this.Stopping)
                 return;
-            if (this.Sockets.Count > 0 && (uint)this.Sockets.Count - 1 >= this.SocketLimit) {
+            if (this.Sockets.Count > 0 && (uint)this.Sockets.Count - 1 >= this.SocketLimit && this.SocketLimit != 0) {
                 this.WatchDog(TCPServerMessages.SocketLimit);
                 return;
             }
@@ -245,7 +245,7 @@ namespace System.Net.Sockets {
             if(!basicSocket)
                 this.WatchDog(TCPServerMessages.ClientDisconnected, this.Sockets[threadId]);
             this.Sockets.Remove(threadId);
-            if (!this.Stopping && (this.SocketLimit > 0 && (uint)this.Sockets.Count - 1 < this.SocketLimit))
+            if (!this.Stopping && (this.SocketLimit > 0 && (uint)this.Sockets.Count - 1 < this.SocketLimit && this.SocketLimit != 0))
                 this.NewThread();
             this.CheckIfStopped();
         }
