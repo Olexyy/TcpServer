@@ -11,40 +11,61 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace System.Net.Sockets {
+    public enum TCPServerStates { Undefined, Initialized, Started, Stopping, Stopped, }
+    public enum TCPServerMessages
+    {
+        Undefined, Initialized, AlreadyInitialized, AddressFail, EndPointFail, ClientConnected, ClientFail, ParseFail,
+        Started, Stopped, StartFail, AcceptFail, NotInitialized, ClientDisconnected, EndAccepting, NoHandler, SocketLimit,
+    }
+    public class TCPServerMessageEventArgs : EventArgs
+    {
+        public string Message { get; set; }
+        public TCPServerMessages MessageType { get; set; }
+        public TCPServerClientInfo ClientInfo { get; set; }
+    }
+    public class TCPServerInteractEventArgs : EventArgs
+    {
+        public int BytesCount { get; set; }
+        public byte[] Bytes { get; set; }
+        public object Object { get; set; }
+        public bool KeepAlive { get; set; }
+        public bool CallBack { get; set; }
+        public TCPServerClientInfo ClientInfo { get; set; }
+    }
+    public class TCPServerClientInfo : IEquatable<TCPServerClientInfo>
+    {
+        public Socket Socket { get; set; }
+        public string Port;
+        public string IpAddress;
+        public ulong Id;
+        public override int GetHashCode()
+        {
+            return (int)this.Id;
+        }
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as TCPServerClientInfo);
+        }
+        public bool Equals(TCPServerClientInfo obj)
+        {
+            return obj != null && this.Id == obj.Id;
+        }
+    }
+    public class TCPServerSettings
+    {
+        public TCPServerInteractHandler InteractHandler;
+        public TCPServerMessageHandler MessageHandler;
+        public Type Type;
+        public TCPServerSettings(TCPServerInteractHandler interactHandler, TCPServerMessageHandler messageHandler = null, Type type = null)
+        {
+            this.InteractHandler = interactHandler;
+            this.MessageHandler = messageHandler;
+            this.Type = type;
+        }
+    }
+    public delegate void TCPServerMessageHandler(object sender, TCPServerMessageEventArgs args);
+    public delegate void TCPServerInteractHandler(object sender, TCPServerInteractEventArgs args);
     class TCPServer : IDisposable {
-        private enum TCPServerStates { Undefined, Initialized, Started, Stopping, Stopped, }
-        private enum TCPServerMessages {
-            Undefined, Initialized, AlreadyInitialized, AddressFail, EndPointFail, ClientConnected, ClientFail, ParseFail,
-            Started, Stopped, StartFail, AcceptFail, NotInitialized, ClientDisconnected, EndAccepting, NoHandler, SocketLimit,
-        }
-        public class TCPServerMessageEventArgs : EventArgs { 
-            public string Message { get; set; }
-        }
-        public class TCPServerInteractEventArgs : EventArgs {
-            public int BytesCount { get; set; }
-            public byte[] Bytes { get; set; }
-            public object Object { get; set; }
-            public bool KeepAlive { get; set; }
-            public bool CallBack { get; set; }
-        }
-        public class TCPServerClientInfo {
-            public Socket Socket { get; set;}
-            public string Port;
-            public string IpAddress;
-            public ulong Id;
-        }
-        public class TCPServerSettings {
-            public TCPServerInteractHandler InteractHandler;
-            public TCPServerMessageHandler MessageHandler;
-            public Type Type;
-            public TCPServerSettings(TCPServerInteractHandler interactHandler, TCPServerMessageHandler messageHandler = null, Type type = null) {
-                this.InteractHandler = interactHandler;
-                this.MessageHandler = messageHandler;
-                this.Type = type;
-            }
-        }
-        public delegate void TCPServerMessageHandler(object sender, TCPServerMessageEventArgs args);
-        public delegate void TCPServerInteractHandler(object sender, TCPServerInteractEventArgs args);
         public event TCPServerInteractHandler ServerInteractEvent;
         public event TCPServerMessageHandler ServerMessageEvent;
         public Dictionary<int, TCPServerClientInfo> Sockets { get; private set; }
@@ -153,9 +174,9 @@ namespace System.Net.Sockets {
             Socket client = null;
             try {
                 client = baseSocket.EndAccept(state);
-                this.AddSocket(client);
+                TCPServerClientInfo clientInfo = this.AddSocket(client);
                 this.NewThread();
-                this.Interact(client);
+                this.Interact(clientInfo);
                 client.Shutdown(SocketShutdown.Both); // todo think of throwing;
                 this.RemoveSocket();
             }
@@ -171,7 +192,8 @@ namespace System.Net.Sockets {
                     client.Close();
             }
         }
-        private void Interact(Socket client) {
+        private void Interact(TCPServerClientInfo clientInfo) {
+            Socket client = clientInfo.Socket;
             bool keepAlive;
             try {
                 do {
@@ -180,6 +202,7 @@ namespace System.Net.Sockets {
                     TCPServerInteractEventArgs args = new TCPServerInteractEventArgs();
                     args.Bytes = bytes;
                     args.BytesCount = bytesCount;
+                    args.ClientInfo = clientInfo;
                     if (this.DataType != null) {
                         MethodInfo method = typeof(TCPServer).GetMethod("GetObject", BindingFlags.Instance | BindingFlags.NonPublic);
                         try {
@@ -218,7 +241,7 @@ namespace System.Net.Sockets {
             this.BaseSocket = null;
             this.Stopping = true;
         }
-        private void AddSocket(Socket socket) {
+        private TCPServerClientInfo AddSocket(Socket socket) {
             int threadId = Thread.CurrentThread.ManagedThreadId;
             TCPServerClientInfo info = new TCPServerClientInfo();
             info.Socket = socket;
@@ -239,6 +262,7 @@ namespace System.Net.Sockets {
                 this.WatchDog(TCPServerMessages.ClientConnected, info);
             }
             this.Sockets.Add(threadId, info);
+            return info;
         }
         private void RemoveSocket(bool basicSocket = false) {
             int threadId = Thread.CurrentThread.ManagedThreadId;
@@ -297,6 +321,8 @@ namespace System.Net.Sockets {
             this.MessageLog.Add(fullMessage);
             TCPServerMessageEventArgs argument = new TCPServerMessageEventArgs();
             argument.Message = fullMessage;
+            argument.MessageType = state;
+            argument.ClientInfo = client;
             if (this.ServerMessageEvent != null)
                 this.ServerMessageEvent(this, argument);
         }

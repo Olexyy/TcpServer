@@ -18,10 +18,11 @@ namespace TCPServerForm
         private TCPServer Server { get; set; }
         private bool NeedRefresh { get; set; }
         private Timer Timer { get; set; }
+        private Messenger Messenger { get; set; }
         public TCPServerForm()
         {
             this.InitializeComponent();
-            TCPServer.TCPServerSettings serverSettings = new TCPServer.TCPServerSettings(this.InteractHandler, this.MessageHandler, typeof(DataDictionary));
+            TCPServerSettings serverSettings = new TCPServerSettings(this.InteractHandler, this.MessageHandler, typeof(DataDictionary));
             this.Server = new TCPServer(serverSettings);
             this.Timer = new Timer();
             this.Timer.Interval = 1000;
@@ -116,7 +117,7 @@ namespace TCPServerForm
             return true;
         }
 
-        private void InteractHandler(object o, TCPServer.TCPServerInteractEventArgs args)
+        private void InteractHandler(object o, TCPServerInteractEventArgs args)
         {
             DataDictionary data = args.Object as DataDictionary;
             if (data.ContainsContext())
@@ -132,7 +133,7 @@ namespace TCPServerForm
             }
         }
 
-        private void MessageHandler(object o, TCPServer.TCPServerMessageEventArgs args)
+        private void MessageHandler(object o, TCPServerMessageEventArgs args)
         {
             this.Message.Text = args.Message;
             this.NeedRefresh = true;
