@@ -5,32 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 
-namespace TCPServerForm
+namespace TCPServer
 {
     public enum MessageTypes { login, login_success, post, logout }
-    class Message
+    public class Message
     {
-        public MessageTypes MessageType { get; private set; }
-        public User User { get; private set; }
-        public string Text { get; private set; }
+        public MessageTypes MessageType { get; set; }
+        public User User { get; set; }
+        public string Text { get; set; }
         public Message(MessageTypes messageType, User User, string text = "")
         {
             this.MessageType = messageType;
             this.Text = text;
             this.User = User;
         }
+        public Message() { }
     }
-    class User : IEquatable<User>
+    public class User : IEquatable<User>
     {
-        public int Id { get; private set; }
-        public string Name { get; private set; }
-        public string Group { get; private set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Group { get; set; }
         public User(int id, string name, string group)
         {
             this.Id = id;
             this.Name = name;
             this.Group = group;
         }
+        public User() { }
         public override int GetHashCode()
         {
             return (int)this.Id;
@@ -44,7 +46,7 @@ namespace TCPServerForm
             return obj != null && this.Id == obj.Id;
         }
     }
-    class UserDatabase
+    public class UserDatabase
     {
         public List<User> Users { get; set; }
         public UserDatabase()
@@ -55,7 +57,7 @@ namespace TCPServerForm
             this.Users.Add(new User(3, "Ann", "Group2"));
         }
     }
-    class Messenger
+    public class Messenger
     {
         private object locker = new object();
         private UserDatabase DB { get; set; }
@@ -71,7 +73,13 @@ namespace TCPServerForm
                     break;
             }
         }
-        private void InteractHandler(object o, TCPServerInteractEventArgs args)
+        public Messenger()
+        {
+            this.DB = new UserDatabase();
+            this.LoggedUsers = new Dictionary<TCPServerClientInfo, User>();
+            this.locker = new object();
+        }
+        public void InteractHandler(object o, TCPServerInteractEventArgs args)
         {
             Message message = args.Object as Message;
             User DbUser = this.Authenticate(message.User);

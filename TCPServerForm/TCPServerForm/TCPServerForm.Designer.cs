@@ -1,4 +1,4 @@
-﻿namespace TCPServerForm
+﻿namespace TCPServer
 {
     partial class TCPServerForm
     {

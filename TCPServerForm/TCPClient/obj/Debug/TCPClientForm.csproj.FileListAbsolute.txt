@@ -6,3 +6,4 @@ Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPServerClientForm
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClientForm.csproj.GenerateResource.Cache
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClient.exe
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClient.pdb
+Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClientForm.csprojResolveAssemblyReference.cache

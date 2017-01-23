@@ -10,7 +10,7 @@ using System.Web.Script.Serialization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace System.Net.Sockets {
+namespace TCPServer {
     public enum TCPServerStates { Undefined, Initialized, Started, Stopping, Stopped, }
     public enum TCPServerMessages
     {
@@ -342,6 +342,74 @@ namespace System.Net.Sockets {
                     clientInfo.Value.Socket.Close();
             if (this.BaseSocket != null)
                 this.BaseSocket.Close();
+        }
+    }
+    public class DataDictionary
+    {
+        public enum Keys { Context, Data }
+        public Dictionary<string, object> Dictionary { get; set; }
+        public string Context
+        {
+            get { return (this.ContainsContext()) ? this.GetContext() : null; }
+            set { this.SetContext(value); }
+        }
+        public object Data
+        {
+            get { return (this.ContainsData()) ? this.GetData() : null; }
+            set { this.SetData(value); }
+        }
+        public DataDictionary()
+        {
+            this.Dictionary = new Dictionary<string, object>();
+        }
+        public DataDictionary(Dictionary<string, object> details)
+        {
+            this.Dictionary = details;
+        }
+        public object this[string key]
+        {
+            get { return this.Dictionary[key]; }
+            set { this.Dictionary[key] = value; }
+        }
+        public void SetValue(string key, object value)
+        {
+            this.Dictionary[key] = value;
+        }
+        public T GetValue<T>(string key)
+        {
+            return (T)this.Dictionary[key];
+        }
+        public bool ContainsKey(string key)
+        {
+            return this.Dictionary.ContainsKey(key);
+        }
+        public string GetContext()
+        {
+            return (string)this.Dictionary[Keys.Context.ToString()];
+        }
+        public bool ContainsContext()
+        {
+            return this.Dictionary.ContainsKey(Keys.Context.ToString());
+        }
+        public void SetContext(string context)
+        {
+            this.Dictionary[Keys.Context.ToString()] = context;
+        }
+        public T GetData<T>()
+        {
+            return (T)this.Dictionary[Keys.Data.ToString()];
+        }
+        public object GetData()
+        {
+            return this.Dictionary[Keys.Data.ToString()];
+        }
+        public void SetData(object data)
+        {
+            this.Dictionary[Keys.Data.ToString()] = data;
+        }
+        public bool ContainsData()
+        {
+            return this.Dictionary.ContainsKey(Keys.Data.ToString());
         }
     }
 }

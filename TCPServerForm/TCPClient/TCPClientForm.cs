@@ -91,12 +91,31 @@ namespace TCPServerClientForm
             switch (message.MessageType)
             {
                 case MessageTypes.login_success:
-                    this.Invoke(new Action(()=>this.Message.Text = "[Messenger]: LOGGED IN..."));
+                    this.Invoke(new Action(()=> {
+                        this.Message.Text = "[Messenger]: Logged in...";
+                        this.buttonLogin.Enabled = false;
+                        this.buttonLogout.Enabled = true;
+                    }));
+                    break;
+                case MessageTypes.logout_success:
+                    this.Invoke(new Action(() => {
+                        this.Message.Text = "[Messenger]: Logged out...";
+                        this.buttonLogin.Enabled = true;
+                        this.buttonLogout.Enabled = false;
+                    }));
                     break;
                 case MessageTypes.post:
-                    this.Invoke(new Action(() => { this.MessageList.Items.Add(message.User.Name);
+                    this.Invoke(new Action(() => {
+                        this.Message.Text = "[Messenger]: New messages received...";
+                        this.MessageList.Items.Add(message.User.Name);
                         this.MessageList.Items[this.MessageList.Items.Count - 1].SubItems.Add(DateTime.Now.ToShortDateString());
                         this.MessageList.Items[this.MessageList.Items.Count - 1].SubItems.Add(message.Text);
+                    }));
+                    break;
+                case MessageTypes.post_success:
+                    this.Invoke(new Action(() => {
+                        this.Message.Text = "[Messenger]: Message posted...";
+                        // TODO: call to logic of moving text
                     }));
                     break;
                 default:
@@ -110,12 +129,13 @@ namespace TCPServerClientForm
             switch (args.MessageType)
             {
                 case TCPServerClientMessages.Disconnected:
-                    //TODO : marshl to thread!!!
-                    this.buttonLogin.Enabled = false;
-                    this.buttonLogout.Enabled = false;
-                    this.buttonDisconnect.Enabled = false;
-                    this.buttonInitialize.Enabled = true;
-                    this.buttonConnect.Enabled = true;
+                    this.Invoke(new Action(()=> {
+                        this.buttonLogin.Enabled = false;
+                        this.buttonLogout.Enabled = false;
+                        this.buttonDisconnect.Enabled = false;
+                        this.buttonInitialize.Enabled = true;
+                        this.buttonConnect.Enabled = true;
+                    }));
                     break;
                 default: break;
             }

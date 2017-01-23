@@ -7,30 +7,32 @@ using System.Net.Sockets;
 
 namespace TCPServerClientForm
 {
-    public enum MessageTypes { login, login_success, post, logout }
+    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success }
     public class Message
     {
-        public MessageTypes MessageType { get; private set; }
-        public User User { get; private set; }
-        public string Text { get; private set; }
+        public MessageTypes MessageType { get; set; }
+        public User User { get; set; }
+        public string Text { get; set; }
         public Message(MessageTypes messageType, User User, string text = "")
         {
             this.MessageType = messageType;
             this.Text = text;
             this.User = User;
         }
+        public Message() { }
     }
     public class User : IEquatable<User>
     {
-        public int Id { get; private set; }
-        public string Name { get; private set; }
-        public string Group { get; private set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Group { get; set; }
         public User(string name, int id = 0 , string group = "")
         {
             this.Id = id;
             this.Name = name;
             this.Group = group;
         }
+        public User() { }
         public override int GetHashCode()
         {
             return (int)this.Id;
@@ -48,7 +50,7 @@ namespace TCPServerClientForm
     {
         public bool LoggedIn { get; private set; }
         private User User { get; set; }
-        public  void InteractHandler(object o, TCPServerClientInteractEventArgs args)
+        public void InteractHandler(object o, TCPServerClientInteractEventArgs args)
         {
             Message message = args.Object as Message;
             switch (message.MessageType)
