@@ -48,16 +48,31 @@ namespace TCPServerClientForm
     }
     public class MessengerClient
     {
+        private object locker;
         public bool LoggedIn { get; private set; }
-        private User User { get; set; }
+        public User User { get; private set; }
+        public MessengerClient()
+        {
+            this.locker = new object();
+        }
         public void InteractHandler(object o, TCPServerClientInteractEventArgs args)
         {
             Message message = args.Object as Message;
             switch (message.MessageType)
             {
                 case MessageTypes.login_success:
-                    this.LoggedIn = true;
-                    this.User = message.User;
+                    lock (this.locker)
+                    {
+                        this.LoggedIn = true;
+                        this.User = message.User;
+                    }
+                    break;
+                case MessageTypes.logout_success:
+                    lock (this.locker)
+                    {
+                        this.LoggedIn = false;
+                        this.User = null;
+                    }
                     break;
                 default:
                     break;

@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace TCPServer
 {
-    public enum MessageTypes { login, login_success, post, logout }
+    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success }
     public class Message
     {
         public MessageTypes MessageType { get; set; }
@@ -93,17 +93,30 @@ namespace TCPServer
                         args.KeepAlive = true;
                         args.CallBack = true;
                     }        
-                    else args.KeepAlive = false;
+                    else
+                        args.KeepAlive = false;
                     break;
                 case MessageTypes.logout:
                     if (DbUser != null && this.LoggedIn(DbUser))
-                        this.Logout(args.ClientInfo);     
-                    args.KeepAlive = false;
+                    {
+                        this.Logout(args.ClientInfo);
+                        args.Object = new Message(MessageTypes.logout_success, DbUser);
+                        args.KeepAlive = true;
+                        args.CallBack = true;
+                    }
+                    else
+                        args.KeepAlive = false;
                     break;
                 case MessageTypes.post:
                     if (DbUser != null && this.LoggedIn(DbUser))
+                    {
                         this.PushMessageToGroup(message.User, message.Text);
-                    args.KeepAlive = true;
+                        args.Object = new Message(MessageTypes.post_success, DbUser);
+                        args.KeepAlive = true;
+                        args.CallBack = true;
+                    }
+                    else
+                        args.KeepAlive = false;
                     break;
                 default:
                     args.KeepAlive = false;

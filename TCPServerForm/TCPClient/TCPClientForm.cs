@@ -148,6 +148,17 @@ namespace TCPServerClientForm
             TCPServerClientInteractEventArgs args = new TCPServerClientInteractEventArgs();
             args.Object = message;
             args.KeepAlive = true;
+            args.CallBack = true;
+            this.Client.Send(args);
+        }
+
+        private void buttonLogout_Click(object sender, EventArgs e)
+        {
+            Message message = new Message(MessageTypes.logout, this.MessengerClient.User);
+            TCPServerClientInteractEventArgs args = new TCPServerClientInteractEventArgs();
+            args.Object = message;
+            args.KeepAlive = true;
+            args.CallBack = true;
             this.Client.Send(args);
         }
     }
