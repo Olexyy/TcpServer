@@ -40,7 +40,7 @@
             this.column_text = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
             this.labelUserName = new System.Windows.Forms.Label();
-            this.textBoxUserName = new System.Windows.Forms.TextBox();
+            this.textBoxFriendsOnline = new System.Windows.Forms.TextBox();
             this.labelBufferSize = new System.Windows.Forms.Label();
             this.textBoxBufferSize = new System.Windows.Forms.TextBox();
             this.labelPort = new System.Windows.Forms.Label();
@@ -52,9 +52,15 @@
             this.textBoxNewMessage = new System.Windows.Forms.TextBox();
             this.buttonPost = new System.Windows.Forms.Button();
             this.buttonClear = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxUserName = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBoxControls.SuspendLayout();
             this.groupBoxSettings.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonInitialize
@@ -96,7 +102,7 @@
             this.groupBoxControls.Controls.Add(this.buttonDisconnect);
             this.groupBoxControls.Controls.Add(this.buttonInitialize);
             this.groupBoxControls.Controls.Add(this.buttonConnect);
-            this.groupBoxControls.Location = new System.Drawing.Point(300, 227);
+            this.groupBoxControls.Location = new System.Drawing.Point(300, 277);
             this.groupBoxControls.Name = "groupBoxControls";
             this.groupBoxControls.Size = new System.Drawing.Size(125, 168);
             this.groupBoxControls.TabIndex = 3;
@@ -138,7 +144,7 @@
             this.MessageList.Location = new System.Drawing.Point(12, 11);
             this.MessageList.MultiSelect = false;
             this.MessageList.Name = "MessageList";
-            this.MessageList.Size = new System.Drawing.Size(274, 298);
+            this.MessageList.Size = new System.Drawing.Size(274, 316);
             this.MessageList.TabIndex = 4;
             this.MessageList.UseCompatibleStateImageBehavior = false;
             this.MessageList.View = System.Windows.Forms.View.Details;
@@ -159,8 +165,6 @@
             // 
             // groupBoxSettings
             // 
-            this.groupBoxSettings.Controls.Add(this.labelUserName);
-            this.groupBoxSettings.Controls.Add(this.textBoxUserName);
             this.groupBoxSettings.Controls.Add(this.labelBufferSize);
             this.groupBoxSettings.Controls.Add(this.textBoxBufferSize);
             this.groupBoxSettings.Controls.Add(this.labelPort);
@@ -169,7 +173,7 @@
             this.groupBoxSettings.Controls.Add(this.textBoxIpAddress);
             this.groupBoxSettings.Location = new System.Drawing.Point(300, 12);
             this.groupBoxSettings.Name = "groupBoxSettings";
-            this.groupBoxSettings.Size = new System.Drawing.Size(125, 198);
+            this.groupBoxSettings.Size = new System.Drawing.Size(125, 148);
             this.groupBoxSettings.TabIndex = 5;
             this.groupBoxSettings.TabStop = false;
             this.groupBoxSettings.Text = "Settings";
@@ -177,24 +181,25 @@
             // labelUserName
             // 
             this.labelUserName.AutoSize = true;
-            this.labelUserName.Location = new System.Drawing.Point(6, 100);
+            this.labelUserName.Location = new System.Drawing.Point(5, 60);
             this.labelUserName.Name = "labelUserName";
-            this.labelUserName.Size = new System.Drawing.Size(61, 13);
+            this.labelUserName.Size = new System.Drawing.Size(75, 13);
             this.labelUserName.TabIndex = 9;
-            this.labelUserName.Text = "User name:";
+            this.labelUserName.Text = "Friends online:";
             // 
-            // textBoxUserName
+            // textBoxFriendsOnline
             // 
-            this.textBoxUserName.Location = new System.Drawing.Point(9, 116);
-            this.textBoxUserName.Name = "textBoxUserName";
-            this.textBoxUserName.Size = new System.Drawing.Size(108, 20);
-            this.textBoxUserName.TabIndex = 8;
-            this.textBoxUserName.Text = "Enter username ...";
+            this.textBoxFriendsOnline.Enabled = false;
+            this.textBoxFriendsOnline.Location = new System.Drawing.Point(6, 76);
+            this.textBoxFriendsOnline.Name = "textBoxFriendsOnline";
+            this.textBoxFriendsOnline.Size = new System.Drawing.Size(108, 20);
+            this.textBoxFriendsOnline.TabIndex = 8;
+            this.textBoxFriendsOnline.Text = "0";
             // 
             // labelBufferSize
             // 
             this.labelBufferSize.AutoSize = true;
-            this.labelBufferSize.Location = new System.Drawing.Point(6, 142);
+            this.labelBufferSize.Location = new System.Drawing.Point(8, 100);
             this.labelBufferSize.Name = "labelBufferSize";
             this.labelBufferSize.Size = new System.Drawing.Size(59, 13);
             this.labelBufferSize.TabIndex = 7;
@@ -202,7 +207,7 @@
             // 
             // textBoxBufferSize
             // 
-            this.textBoxBufferSize.Location = new System.Drawing.Point(9, 158);
+            this.textBoxBufferSize.Location = new System.Drawing.Point(7, 116);
             this.textBoxBufferSize.Name = "textBoxBufferSize";
             this.textBoxBufferSize.Size = new System.Drawing.Size(108, 20);
             this.textBoxBufferSize.TabIndex = 6;
@@ -247,7 +252,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Message});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 411);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 454);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(436, 22);
             this.statusStrip1.TabIndex = 6;
@@ -262,18 +267,18 @@
             // textBoxNewMessage
             // 
             this.textBoxNewMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBoxNewMessage.Location = new System.Drawing.Point(12, 315);
+            this.textBoxNewMessage.Location = new System.Drawing.Point(6, 18);
             this.textBoxNewMessage.Multiline = true;
             this.textBoxNewMessage.Name = "textBoxNewMessage";
-            this.textBoxNewMessage.Size = new System.Drawing.Size(274, 62);
+            this.textBoxNewMessage.Size = new System.Drawing.Size(262, 52);
             this.textBoxNewMessage.TabIndex = 7;
             // 
             // buttonPost
             // 
             this.buttonPost.Enabled = false;
-            this.buttonPost.Location = new System.Drawing.Point(154, 383);
+            this.buttonPost.Location = new System.Drawing.Point(146, 76);
             this.buttonPost.Name = "buttonPost";
-            this.buttonPost.Size = new System.Drawing.Size(132, 23);
+            this.buttonPost.Size = new System.Drawing.Size(122, 23);
             this.buttonPost.TabIndex = 9;
             this.buttonPost.Text = "Post";
             this.buttonPost.UseVisualStyleBackColor = true;
@@ -282,26 +287,67 @@
             // buttonClear
             // 
             this.buttonClear.Enabled = false;
-            this.buttonClear.Location = new System.Drawing.Point(12, 383);
+            this.buttonClear.Location = new System.Drawing.Point(6, 76);
             this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(132, 23);
+            this.buttonClear.Size = new System.Drawing.Size(134, 23);
             this.buttonClear.TabIndex = 10;
             this.buttonClear.Text = "Clear";
             this.buttonClear.UseVisualStyleBackColor = true;
             this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(61, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "User name:";
+            // 
+            // textBoxUserName
+            // 
+            this.textBoxUserName.Location = new System.Drawing.Point(5, 32);
+            this.textBoxUserName.Name = "textBoxUserName";
+            this.textBoxUserName.Size = new System.Drawing.Size(108, 20);
+            this.textBoxUserName.TabIndex = 11;
+            this.textBoxUserName.Text = "Enter username ...";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.buttonPost);
+            this.groupBox1.Controls.Add(this.buttonClear);
+            this.groupBox1.Controls.Add(this.textBoxNewMessage);
+            this.groupBox1.Location = new System.Drawing.Point(12, 333);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(274, 112);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Posting new message";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.textBoxFriendsOnline);
+            this.groupBox2.Controls.Add(this.textBoxUserName);
+            this.groupBox2.Controls.Add(this.labelUserName);
+            this.groupBox2.Location = new System.Drawing.Point(300, 166);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(125, 105);
+            this.groupBox2.TabIndex = 14;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Messenger";
+            // 
             // TCPClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(436, 433);
-            this.Controls.Add(this.buttonClear);
-            this.Controls.Add(this.buttonPost);
-            this.Controls.Add(this.textBoxNewMessage);
+            this.ClientSize = new System.Drawing.Size(436, 476);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBoxSettings);
             this.Controls.Add(this.MessageList);
             this.Controls.Add(this.groupBoxControls);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBox2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "TCPClientForm";
             this.ShowIcon = false;
@@ -312,6 +358,10 @@
             this.groupBoxSettings.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -337,12 +387,16 @@
         private System.Windows.Forms.Label labelBufferSize;
         private System.Windows.Forms.ColumnHeader column_text;
         private System.Windows.Forms.Label labelUserName;
-        private System.Windows.Forms.TextBox textBoxUserName;
+        private System.Windows.Forms.TextBox textBoxFriendsOnline;
         private System.Windows.Forms.Button buttonLogout;
         private System.Windows.Forms.Button buttonLogin;
         private System.Windows.Forms.TextBox textBoxNewMessage;
         private System.Windows.Forms.Button buttonPost;
         private System.Windows.Forms.Button buttonClear;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBoxUserName;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 

@@ -86,13 +86,14 @@ namespace TCPServerClientForm
                 case MessageTypes.login_success:
                     this.Invoke(new Action(()=> {
                         this.Message.Text = "[Messenger]: Logged in...";
-                        this.ButtonsPattern(false, false, true, false, true, true, true);
+                        this.ButtonsPattern(false, false, false, false, true, true, true);
                     }));
                     break;
                 case MessageTypes.logout_success:
                     this.Invoke(new Action(() => {
                         this.Message.Text = "[Messenger]: Logged out...";
                         this.ButtonsPattern(false, false, true, true, false, false, false);
+                        this.textBoxFriendsOnline.Text = "0";
                     }));
                     break;
                 case MessageTypes.post:
@@ -106,7 +107,12 @@ namespace TCPServerClientForm
                 case MessageTypes.post_success:
                     this.Invoke(new Action(() => {
                         this.Message.Text = "[Messenger]: Message posted...";
-                        this.ButtonsPattern(false, false, true, false, true, true, true);
+                    }));
+                    break;
+                case MessageTypes.group:
+                    this.Invoke(new Action(() => {
+                        this.Message.Text = "[Messenger]: Changes in group...";
+                        this.textBoxFriendsOnline.Text = message.Text;
                     }));
                     break;
                 default:
@@ -115,18 +121,23 @@ namespace TCPServerClientForm
         }
         private void MessageHandler(object o, TCPServerClientMessageEventArgs args)
         {
-            this.Invoke(new Action(()=>this.Message.Text = args.Message));
-            switch (args.MessageType)
+            try
             {
-                case TCPServerClientMessages.Disconnected:
-                    this.Invoke(new Action(()=> {
-                        this.ButtonsPattern(true, true, false, false, false, false, false);
-                    }));
-                    if (this.Client.BaseSocket != null)
-                        this.Client.Dispose();
-                    break;
-                default: break;
-            }
+                this.Invoke(new Action(() => this.Message.Text = args.Message));
+                switch (args.MessageType)
+                {
+                    case TCPServerClientMessages.Disconnected:
+                        this.Invoke(new Action(() =>
+                        {
+                            this.ButtonsPattern(true, true, false, false, false, false, false);
+                            this.textBoxFriendsOnline.Text = "0";
+                        }));
+                        if (this.Client != null && this.Client.BaseSocket != null)
+                            this.Client.Dispose();
+                        break;
+                    default: break;
+                }
+            }catch(Exception ex) { }
         }
         private void buttonLogin_Click(object sender, EventArgs e)
         {

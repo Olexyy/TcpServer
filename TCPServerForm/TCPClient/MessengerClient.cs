@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace TCPServerClientForm
 {
-    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success }
+    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group }
     public class Message
     {
         public MessageTypes MessageType { get; set; }

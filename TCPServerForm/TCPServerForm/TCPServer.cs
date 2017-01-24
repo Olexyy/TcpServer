@@ -55,7 +55,7 @@ namespace TCPServer {
         public ulong Id;
         public override int GetHashCode()
         {
-            return (int)this.Id;
+            return this.Id.GetHashCode();
         }
         public override bool Equals(object obj)
         {
@@ -63,7 +63,7 @@ namespace TCPServer {
         }
         public bool Equals(TCPServerClientInfo obj)
         {
-            return obj != null && this.Id == obj.Id;
+            return obj != null && this.Id.Equals(obj.Id);
         }
     }
     public class TCPServerSettings

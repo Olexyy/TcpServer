@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace TCPServer
 {
-    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success }
+    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group }
     public class Message
     {
         public MessageTypes MessageType { get; set; }
@@ -64,9 +64,12 @@ namespace TCPServer
         private Dictionary<TCPServerClientInfo, User> LoggedUsers { get; set; }
         private void MessageHandler(object o, TCPServerMessageEventArgs args)
         {
+            TCPServer server = o as TCPServer;
             switch (args.MessageType)
             {
                 case TCPServerMessages.ClientFail:
+                    User user = this.LoggedUsers[args.ClientInfo];
+                    this.PushMessageToGroup(MessageTypes.group, user, server, this.CountGroup(user.Group));
                     this.LoggedUsers.Remove(args.ClientInfo);
                     break;
                 default:
@@ -83,12 +86,14 @@ namespace TCPServer
         {
             Message message = args.Object as Message;
             User DbUser = this.Authenticate(message.User);
+            TCPServer server = o as TCPServer;
             switch (message.MessageType)
             {
                 case MessageTypes.login:
                     if (DbUser != null)
                     {
                         this.Login(args.ClientInfo, DbUser);
+                        this.PushMessageToGroup(MessageTypes.group, DbUser, server, this.CountGroup(DbUser.Group));
                         args.Object = new Message(MessageTypes.login_success, DbUser);
                         args.KeepAlive = true;
                         args.CallBack = true;
@@ -100,6 +105,7 @@ namespace TCPServer
                     if (DbUser != null && this.LoggedIn(DbUser))
                     {
                         this.Logout(args.ClientInfo);
+                        this.PushMessageToGroup(MessageTypes.group, DbUser, server, this.CountGroup(DbUser.Group));
                         args.Object = new Message(MessageTypes.logout_success, DbUser);
                         args.KeepAlive = true;
                         args.CallBack = true;
@@ -110,8 +116,7 @@ namespace TCPServer
                 case MessageTypes.post:
                     if (DbUser != null && this.LoggedIn(DbUser))
                     {
-                        TCPServer server = o as TCPServer;
-                        this.PushMessageToGroup(message.User, message.Text, server);
+                        this.PushMessageToGroup(MessageTypes.post, DbUser, server, message.Text);
                         args.Object = new Message(MessageTypes.post_success, DbUser);
                         args.KeepAlive = true;
                         args.CallBack = true;
@@ -157,22 +162,22 @@ namespace TCPServer
                 this.LoggedUsers.Remove(clientInfo);
             }
         }
-        private void PushMessageToGroup(User user, string message, TCPServer server)
+        private void PushMessageToGroup(MessageTypes type, User user, TCPServer server, string message = "")
         {
             lock (this.locker)
             {
-                foreach (TCPServerClientInfo userInfo in this.LoggedUsers.Keys)
-                {
-                    if (this.LoggedUsers[userInfo].Group == user.Group) //&& user.Name != this.LoggedUsers[userInfo].Name
-                        this.PushMessageToUser(userInfo, user, message, server);
-                }
+                this.LoggedUsers.Where(i => i.Value.Group == user.Group).ToList().ForEach(i => this.PushMessageToUser(type, i.Key, user, server, message));
             }
         }
-        private void PushMessageToUser(TCPServerClientInfo clientInfo, User user, string message, TCPServer server)
+        private void PushMessageToUser(MessageTypes type, TCPServerClientInfo clientInfo, User user, TCPServer server, string message = "" )
         {
-            Message msg = new Message(MessageTypes.post, user, message);
+            Message msg = new Message(type, user, message);
             TCPServerInteractEventArgs args = new TCPServerInteractEventArgs(msg, clientInfo, false, false);
             server.Send(args);
+        }
+        private string CountGroup(string group)
+        {
+            return this.LoggedUsers.Where(i => i.Value.Group == group).Count().ToString();
         }
     }
 }
