@@ -88,7 +88,7 @@ namespace TCPServer
                 case MessageTypes.login:
                     if (DbUser != null)
                     {
-                        this.Login(args.ClientInfo, message.User);
+                        this.Login(args.ClientInfo, DbUser);
                         args.Object = new Message(MessageTypes.login_success, DbUser);
                         args.KeepAlive = true;
                         args.CallBack = true;
@@ -110,7 +110,8 @@ namespace TCPServer
                 case MessageTypes.post:
                     if (DbUser != null && this.LoggedIn(DbUser))
                     {
-                        this.PushMessageToGroup(message.User, message.Text);
+                        TCPServer server = o as TCPServer;
+                        this.PushMessageToGroup(message.User, message.Text, server);
                         args.Object = new Message(MessageTypes.post_success, DbUser);
                         args.KeepAlive = true;
                         args.CallBack = true;
@@ -156,21 +157,22 @@ namespace TCPServer
                 this.LoggedUsers.Remove(clientInfo);
             }
         }
-        private void PushMessageToGroup(User user, string message)
+        private void PushMessageToGroup(User user, string message, TCPServer server)
         {
             lock (this.locker)
             {
                 foreach (TCPServerClientInfo userInfo in this.LoggedUsers.Keys)
                 {
-                    if (this.LoggedUsers[userInfo].Group == user.Group && user.Name != this.LoggedUsers[userInfo].Name)
-                        this.PushMessageToUser(userInfo, message);
+                    if (this.LoggedUsers[userInfo].Group == user.Group) //&& user.Name != this.LoggedUsers[userInfo].Name
+                        this.PushMessageToUser(userInfo, user, message, server);
                 }
             }
         }
-        private void PushMessageToUser(TCPServerClientInfo clientInfo, string message)
+        private void PushMessageToUser(TCPServerClientInfo clientInfo, User user, string message, TCPServer server)
         {
-            //todo: asyncronise
-            clientInfo.Socket.Send(Encoding.UTF8.GetBytes(message));
+            Message msg = new Message(MessageTypes.post, user, message);
+            TCPServerInteractEventArgs args = new TCPServerInteractEventArgs(msg, clientInfo, false, false);
+            server.Send(args);
         }
     }
 }

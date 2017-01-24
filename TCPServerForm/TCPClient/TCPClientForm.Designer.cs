@@ -270,21 +270,25 @@
             // 
             // buttonPost
             // 
+            this.buttonPost.Enabled = false;
             this.buttonPost.Location = new System.Drawing.Point(154, 383);
             this.buttonPost.Name = "buttonPost";
             this.buttonPost.Size = new System.Drawing.Size(132, 23);
             this.buttonPost.TabIndex = 9;
             this.buttonPost.Text = "Post";
             this.buttonPost.UseVisualStyleBackColor = true;
+            this.buttonPost.Click += new System.EventHandler(this.buttonPost_Click);
             // 
             // buttonClear
             // 
+            this.buttonClear.Enabled = false;
             this.buttonClear.Location = new System.Drawing.Point(12, 383);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(132, 23);
             this.buttonClear.TabIndex = 10;
             this.buttonClear.Text = "Clear";
             this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
             // TCPClientForm
             // 
@@ -302,6 +306,7 @@
             this.Name = "TCPClientForm";
             this.ShowIcon = false;
             this.Text = "TCP Client";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TCPClientForm_FormClosed);
             this.groupBoxControls.ResumeLayout(false);
             this.groupBoxSettings.ResumeLayout(false);
             this.groupBoxSettings.PerformLayout();

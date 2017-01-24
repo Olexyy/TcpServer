@@ -22,6 +22,13 @@ namespace TCPServer {
         public string Message { get; set; }
         public TCPServerMessages MessageType { get; set; }
         public TCPServerClientInfo ClientInfo { get; set; }
+        public TCPServerMessageEventArgs() { }
+        public TCPServerMessageEventArgs(TCPServerMessages messageType, string message, TCPServerClientInfo clientInfo)
+        {
+            this.Message = message;
+            this.ClientInfo = clientInfo;
+            this.MessageType = messageType;
+        }
     }
     public class TCPServerInteractEventArgs : EventArgs
     {
@@ -31,6 +38,14 @@ namespace TCPServer {
         public bool KeepAlive { get; set; }
         public bool CallBack { get; set; }
         public TCPServerClientInfo ClientInfo { get; set; }
+        public TCPServerInteractEventArgs(object message, TCPServerClientInfo clientInfo, bool keepAlive = true, bool callback = true)
+        {
+            this.Object = message;
+            this.KeepAlive = keepAlive;
+            this.CallBack = callback;
+            this.ClientInfo = clientInfo;
+        }
+        public TCPServerInteractEventArgs() { }
     }
     public class TCPServerClientInfo : IEquatable<TCPServerClientInfo>
     {
@@ -176,8 +191,8 @@ namespace TCPServer {
                 client = baseSocket.EndAccept(state);
                 TCPServerClientInfo clientInfo = this.AddSocket(client);
                 this.NewThread();
-                this.Interact(clientInfo);
-                client.Shutdown(SocketShutdown.Both); // todo think of throwing;
+                this.Interact(clientInfo); // TODO refactor interact rethrowing ex this removing from dictionary here;
+                client.Shutdown(SocketShutdown.Both);
                 this.RemoveSocket();
             }
             catch (ObjectDisposedException ex) {
@@ -220,10 +235,16 @@ namespace TCPServer {
                         bytesCount = client.Send(args.Bytes);
                     }
                     keepAlive = args.KeepAlive;
-                } while (keepAlive); // we may add here stopping condition;
+                } while (keepAlive);
             }
             catch (Exception ex) {
                 this.WatchDog(TCPServerMessages.ClientFail, this.Sockets[Thread.CurrentThread.ManagedThreadId]);
+                // TODO: do it in better way on higher stack
+                if(this.Sockets[Thread.CurrentThread.ManagedThreadId]!= null)
+                {
+                    this.Sockets[Thread.CurrentThread.ManagedThreadId].Socket.Close();
+                    this.Sockets.Remove(Thread.CurrentThread.ManagedThreadId);
+                }
             }
         }
         private void GetObject<T>(TCPServerInteractEventArgs args) {
@@ -325,6 +346,19 @@ namespace TCPServer {
             argument.ClientInfo = client;
             if (this.ServerMessageEvent != null)
                 this.ServerMessageEvent(this, argument);
+        }
+        public void Send(TCPServerInteractEventArgs args)
+        {
+            try
+            {
+                if (this.DataType != null)
+                    this.SetObject(args);
+                int bytesCount = args.ClientInfo.Socket.Send(args.Bytes);
+            }
+            catch (Exception ex)
+            {
+                this.WatchDog(TCPServerMessages.ClientFail, args.ClientInfo);
+            }
         }
         public string ServerStatus { get {
                 if (this.Initialized && !this.Started)

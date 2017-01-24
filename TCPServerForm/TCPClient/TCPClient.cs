@@ -23,6 +23,13 @@ namespace System.Net.Sockets {
         public object Object { get; set; }
         public bool KeepAlive { get; set; }
         public bool CallBack { get; set; }
+        public TCPServerClientInteractEventArgs(object message, bool keepAlive = true, bool callback = true)
+        {
+            this.Object = message;
+            this.KeepAlive = keepAlive;
+            this.CallBack = callback;
+        }
+        public TCPServerClientInteractEventArgs() { }
     }
     public class TCPServerClientMessageEventArgs : EventArgs
     {
@@ -33,6 +40,7 @@ namespace System.Net.Sockets {
             this.MessageType = messageType;
             this.Message = message;
         }
+        public TCPServerClientMessageEventArgs() { }
     }
     public class TCPServerClientSettings
     {
@@ -57,7 +65,7 @@ namespace System.Net.Sockets {
         public int BufferSize { get; private set; }
         public Type DataType { get; set; }
         public List<string> MessageLog { get; private set; }
-        private Socket BaseSocket { get; set; }
+        public Socket BaseSocket { get; private set; }
         public bool Connected { get; set; }
         public TCPServerClient(TCPServerClientSettings clientSettings) {
             this.MessageLog = new List<string>();
