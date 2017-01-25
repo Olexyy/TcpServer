@@ -45,13 +45,13 @@ namespace TCPServerClient
     }
     public class TCPServerClientSettings
     {
-        public TCPServerClientInteractHandler InteractHandler;
-        public TCPServerClientMessageHandler MessageHandler;
+        public TCPServerClientInteractHandler[] InteractHandlers;
+        public TCPServerClientMessageHandler[] MessageHandlers;
         public Type Type;
-        public TCPServerClientSettings(TCPServerClientInteractHandler interactHandler, TCPServerClientMessageHandler messageHandler = null, Type type = null)
+        public TCPServerClientSettings(TCPServerClientInteractHandler[] interactHandlers, TCPServerClientMessageHandler[] messageHandlers = null, Type type = null)
         {
-            this.InteractHandler = interactHandler;
-            this.MessageHandler = messageHandler;
+            this.InteractHandlers = interactHandlers;
+            this.MessageHandlers = messageHandlers;
             this.Type = type;
         }
     }
@@ -72,10 +72,10 @@ namespace TCPServerClient
             this.MessageLog = new List<string>();
             if (clientSettings.Type != null)
                 this.DataType = clientSettings.Type;
-            if (clientSettings.InteractHandler != null)
-                this.ClientInteractEvent += clientSettings.InteractHandler;
-            if (clientSettings.MessageHandler != null)
-                this.ClientMessageEvent += clientSettings.MessageHandler;
+            if (clientSettings.InteractHandlers != null)
+                clientSettings.InteractHandlers.ToList().ForEach(i => this.ClientInteractEvent += i);
+            if (clientSettings.MessageHandlers != null)
+                clientSettings.MessageHandlers.ToList().ForEach(i => this.ClientMessageEvent += i);
         }
         public TCPServerClient(TCPServerClientInteractHandler interactHandler, TCPServerClientMessageHandler messageHandler = null, Type type = null) {
             this.MessageLog = new List<string>();
@@ -85,6 +85,16 @@ namespace TCPServerClient
                 this.ClientInteractEvent += interactHandler;
             if (messageHandler != null)
                 this.ClientMessageEvent += messageHandler;
+        }
+        public TCPServerClient(TCPServerClientInteractHandler[] interactHandlers, TCPServerClientMessageHandler[] messageHandlers = null, Type type = null)
+        {
+            this.MessageLog = new List<string>();
+            if (type != null)
+                this.DataType = type;
+            if (interactHandlers != null)
+                interactHandlers.ToList().ForEach(i => this.ClientInteractEvent += i);
+            if (messageHandlers != null)
+                messageHandlers.ToList().ForEach(i => this.ClientMessageEvent += i);
         }
         public void Initialize(int port, string ipAddress, int bufferSize = 1024, bool connect = false) {
             this.BufferSize = bufferSize;

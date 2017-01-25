@@ -68,13 +68,13 @@ namespace TCPServer {
     }
     public class TCPServerSettings
     {
-        public TCPServerInteractHandler InteractHandler;
-        public TCPServerMessageHandler MessageHandler;
+        public TCPServerInteractHandler[] InteractHandlers;
+        public TCPServerMessageHandler[] MessageHandlers;
         public Type Type;
-        public TCPServerSettings(TCPServerInteractHandler interactHandler, TCPServerMessageHandler messageHandler = null, Type type = null)
+        public TCPServerSettings(TCPServerInteractHandler[] interactHandlers, TCPServerMessageHandler[] messageHandlers = null, Type type = null)
         {
-            this.InteractHandler = interactHandler;
-            this.MessageHandler = messageHandler;
+            this.InteractHandlers = interactHandlers;
+            this.MessageHandlers = messageHandlers;
             this.Type = type;
         }
     }
@@ -102,12 +102,13 @@ namespace TCPServer {
             this.MessageLog = new List<string>();
             if (serverSettings.Type != null)
                 this.DataType = serverSettings.Type;
-            if (serverSettings.InteractHandler != null)
-                this.ServerInteractEvent += serverSettings.InteractHandler;
-            if (serverSettings.MessageHandler != null)
-                this.ServerMessageEvent += serverSettings.MessageHandler;
+            if (serverSettings.InteractHandlers != null)
+                serverSettings.InteractHandlers.ToList().ForEach(i => this.ServerInteractEvent += i);
+            if (serverSettings.MessageHandlers != null)
+                serverSettings.MessageHandlers.ToList().ForEach(i => this.ServerMessageEvent += i);
         }
-        public TCPServer(TCPServerInteractHandler interactHandler, TCPServerMessageHandler messageHandler = null, Type type = null) {
+        public TCPServer(TCPServerInteractHandler interactHandler, TCPServerMessageHandler messageHandler = null, Type type = null)
+        {
             this.Counter = 0;
             this.Sockets = new Dictionary<int, TCPServerClientInfo>();
             this.MessageLog = new List<string>();
@@ -118,10 +119,21 @@ namespace TCPServer {
             if (messageHandler != null)
                 this.ServerMessageEvent += messageHandler;
         }
+        public TCPServer(TCPServerInteractHandler[] interactHandlers, TCPServerMessageHandler[] messageHandlers = null, Type type = null) {
+            this.Counter = 0;
+            this.Sockets = new Dictionary<int, TCPServerClientInfo>();
+            this.MessageLog = new List<string>();
+            if (type != null)
+                this.DataType = type;
+            if (interactHandlers != null)
+                interactHandlers.ToList().ForEach(i=>this.ServerInteractEvent+=i);
+            if (messageHandlers != null)
+                messageHandlers.ToList().ForEach(i => this.ServerMessageEvent += i);
+        }
         public void Initialize(int port = 0, string ipAddress = "0.0.0.0", int bufferSize = 1024, uint socketLimit = 0) {
             Random rand = new Random();
             if (port == 0) 
-                port = rand.Next(48654, 49150); // free ports form *wikipedia*
+                port = rand.Next(48654, 49150); // free ports according to *wikipedia*
             this.BufferSize = bufferSize;
             this.SocketLimit = socketLimit;
             this.SetEndpoint(ipAddress, port);
@@ -206,10 +218,12 @@ namespace TCPServer {
                 this.WatchDog(TCPServerMessages.AcceptFail);
             }
             finally {
-                client.Shutdown(SocketShutdown.Both);
-                this.RemoveSocket();
                 if (client != null)
+                {
+                    client.Shutdown(SocketShutdown.Both);
+                    this.RemoveSocket();
                     client.Close();
+                }
             }
         }
         private void Interact(TCPServerClientInfo clientInfo) {

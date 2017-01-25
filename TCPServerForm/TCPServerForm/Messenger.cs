@@ -62,15 +62,18 @@ namespace TCPServer
         private object locker = new object();
         private UserDatabase DB { get; set; }
         private Dictionary<TCPServerClientInfo, User> LoggedUsers { get; set; }
-        private void MessageHandler(object o, TCPServerMessageEventArgs args)
+        public void MessageHandler(object o, TCPServerMessageEventArgs args)
         {
             TCPServer server = o as TCPServer;
             switch (args.MessageType)
             {
                 case TCPServerMessages.ClientFail:
-                    User user = this.LoggedUsers[args.ClientInfo];
-                    this.PushMessageToGroup(MessageTypes.group, user, server, this.CountGroup(user.Group));
-                    this.LoggedUsers.Remove(args.ClientInfo);
+                    if (this.LoggedUsers.ContainsKey(args.ClientInfo))
+                    {
+                        User user = this.LoggedUsers[args.ClientInfo];
+                        this.LoggedUsers.Remove(args.ClientInfo);
+                        this.PushMessageToGroup(MessageTypes.group, user, server, this.CountGroup(user.Group));
+                    }    
                     break;
                 default:
                     break;

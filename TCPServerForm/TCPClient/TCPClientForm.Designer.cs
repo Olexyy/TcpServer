@@ -39,14 +39,14 @@
             this.column_time = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.column_text = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
-            this.labelUserName = new System.Windows.Forms.Label();
-            this.textBoxFriendsOnline = new System.Windows.Forms.TextBox();
             this.labelBufferSize = new System.Windows.Forms.Label();
             this.textBoxBufferSize = new System.Windows.Forms.TextBox();
             this.labelPort = new System.Windows.Forms.Label();
             this.labelIpAddress = new System.Windows.Forms.Label();
             this.textBoxPort = new System.Windows.Forms.TextBox();
             this.textBoxIpAddress = new System.Windows.Forms.TextBox();
+            this.labelUserName = new System.Windows.Forms.Label();
+            this.textBoxFriendsOnline = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.Message = new System.Windows.Forms.ToolStripStatusLabel();
             this.textBoxNewMessage = new System.Windows.Forms.TextBox();
@@ -178,24 +178,6 @@
             this.groupBoxSettings.TabStop = false;
             this.groupBoxSettings.Text = "Settings";
             // 
-            // labelUserName
-            // 
-            this.labelUserName.AutoSize = true;
-            this.labelUserName.Location = new System.Drawing.Point(5, 60);
-            this.labelUserName.Name = "labelUserName";
-            this.labelUserName.Size = new System.Drawing.Size(75, 13);
-            this.labelUserName.TabIndex = 9;
-            this.labelUserName.Text = "Friends online:";
-            // 
-            // textBoxFriendsOnline
-            // 
-            this.textBoxFriendsOnline.Enabled = false;
-            this.textBoxFriendsOnline.Location = new System.Drawing.Point(6, 76);
-            this.textBoxFriendsOnline.Name = "textBoxFriendsOnline";
-            this.textBoxFriendsOnline.Size = new System.Drawing.Size(108, 20);
-            this.textBoxFriendsOnline.TabIndex = 8;
-            this.textBoxFriendsOnline.Text = "0";
-            // 
             // labelBufferSize
             // 
             this.labelBufferSize.AutoSize = true;
@@ -247,6 +229,24 @@
             this.textBoxIpAddress.Size = new System.Drawing.Size(109, 20);
             this.textBoxIpAddress.TabIndex = 0;
             this.textBoxIpAddress.Text = "Enter IP Address ...";
+            // 
+            // labelUserName
+            // 
+            this.labelUserName.AutoSize = true;
+            this.labelUserName.Location = new System.Drawing.Point(5, 60);
+            this.labelUserName.Name = "labelUserName";
+            this.labelUserName.Size = new System.Drawing.Size(115, 13);
+            this.labelUserName.TabIndex = 9;
+            this.labelUserName.Text = "People in group online:";
+            // 
+            // textBoxFriendsOnline
+            // 
+            this.textBoxFriendsOnline.Enabled = false;
+            this.textBoxFriendsOnline.Location = new System.Drawing.Point(6, 76);
+            this.textBoxFriendsOnline.Name = "textBoxFriendsOnline";
+            this.textBoxFriendsOnline.Size = new System.Drawing.Size(108, 20);
+            this.textBoxFriendsOnline.TabIndex = 8;
+            this.textBoxFriendsOnline.Text = "0";
             // 
             // statusStrip1
             // 

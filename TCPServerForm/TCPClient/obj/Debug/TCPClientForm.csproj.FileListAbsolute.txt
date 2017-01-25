@@ -2,7 +2,7 @@ Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\bin\Debug\TCPClient.exe.confi
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\bin\Debug\TCPClient.exe
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\bin\Debug\TCPClient.pdb
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClient.Properties.Resources.resources
+Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPServerClient.TCPClientForm.resources
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClientForm.csproj.GenerateResource.Cache
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClient.exe
 Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPClient.pdb
-Z:\I\Git\GitRepo\TcpServer\TCPServerForm\TCPClient\obj\Debug\TCPServerClient.TCPClientForm.resources

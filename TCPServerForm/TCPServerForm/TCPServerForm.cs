@@ -24,7 +24,7 @@ namespace TCPServer
         {
             this.InitializeComponent();
             this.Messenger = new Messenger();
-            TCPServerSettings serverSettings = new TCPServerSettings(this.Messenger.InteractHandler, this.MessageHandler, typeof(Message));
+            TCPServerSettings serverSettings = new TCPServerSettings(new TCPServerInteractHandler[] { this.Messenger.InteractHandler }, new TCPServerMessageHandler[] { this.MessageHandler, this.Messenger.MessageHandler }, typeof(Message));
             this.Server = new TCPServer(serverSettings);
             this.Timer = new Timer();
             this.Timer.Interval = 1000;
@@ -129,7 +129,7 @@ namespace TCPServer
         {
             if (this.NeedRefresh)
             {
-                if (this.Server.EndPoint != null)
+                if (this.Server!=null && this.Server.EndPoint != null)
                     this.SetCurrentStatus(this.Server.EndPoint.Address.ToString(), this.Server.EndPoint.Port, this.Server.BufferSize);
                 this.SocketList.Items.Clear();
                 foreach (var pair in this.Server.Sockets)

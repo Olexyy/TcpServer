@@ -28,11 +28,10 @@ namespace TCPServerClient
                 int port =  Convert.ToInt32(this.textBoxPort.Text);
                 int buffer = (this.textBoxBufferSize.Text == "Default (1024)") ? 1024 : Convert.ToInt32(this.textBoxBufferSize.Text);
                 string ipAddress = (this.textBoxIpAddress.Text == "Enter IP Address ...") ? "127.0.0.1" : this.textBoxIpAddress.Text;
-                TCPServerClientSettings clientSettings = new TCPServerClientSettings(this.InteractHandler, this.MessageHandler, typeof(Message));
+                TCPServerClientSettings clientSettings = new TCPServerClientSettings(new TCPServerClientInteractHandler[] { this.InteractHandler, this.MessengerClient.InteractHandler }, new TCPServerClientMessageHandler[] { this.MessageHandler }, typeof(Message));
                 if (this.Client != null && this.Client.BaseSocket != null)
                     this.Client.Dispose();
                 this.Client = new TCPServerClient(clientSettings);
-                this.Client.ClientInteractEvent += this.MessengerClient.InteractHandler;
                 this.Client.Initialize(port, ipAddress, buffer);
                 this.ButtonsPattern(true, true, false, false, false, false, false);
             }
@@ -41,12 +40,8 @@ namespace TCPServerClient
         }
         private void buttonConnect_Click(object sender, EventArgs e)
         {
-            if (this.Client == null)
-                this.buttonInitialize_Click(null, null);
+            this.buttonInitialize_Click(null, null);
             this.Client.Connect();
-            // TODO: This should be handled by async message handler of server
-            while (!this.Client.Connected);
-            this.ButtonsPattern(false, false, true, true, false, false, false);
         }
         private void buttonDisconnect_Click(object sender, EventArgs e)
         {
@@ -126,6 +121,9 @@ namespace TCPServerClient
                 this.Invoke(new Action(() => this.Message.Text = args.Message));
                 switch (args.MessageType)
                 {
+                    case TCPServerClientMessages.Connected:
+                        this.Invoke(new Action(() => this.ButtonsPattern(false, false, true, true, false, false, false)));
+                        break;
                     case TCPServerClientMessages.Disconnected:
                         this.Invoke(new Action(() =>
                         {
