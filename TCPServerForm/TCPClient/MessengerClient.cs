@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
+using TCPServerClient;
 
-namespace TCPServerClientForm
+namespace TCPServerClient
 {
     public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group }
     public class Message

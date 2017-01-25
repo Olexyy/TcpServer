@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Net.Sockets;
 
-namespace TCPServerClientForm
+namespace TCPServerClient
 {
     public partial class TCPClientForm : Form
     {

@@ -1,4 +1,4 @@
-﻿namespace TCPServerClientForm
+﻿namespace TCPServerClient
 {
     partial class TCPClientForm
     {

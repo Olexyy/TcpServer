@@ -80,7 +80,9 @@ namespace TCPServer {
     }
     public delegate void TCPServerMessageHandler(object sender, TCPServerMessageEventArgs args);
     public delegate void TCPServerInteractHandler(object sender, TCPServerInteractEventArgs args);
-    class TCPServer : IDisposable {
+    public abstract class TCPServerException : Exception {  } 
+    public class TCPServerInteractException : TCPServerException {  }
+    public class TCPServer : IDisposable {
         public event TCPServerInteractHandler ServerInteractEvent;
         public event TCPServerMessageHandler ServerMessageEvent;
         public Dictionary<int, TCPServerClientInfo> Sockets { get; private set; }
@@ -191,9 +193,10 @@ namespace TCPServer {
                 client = baseSocket.EndAccept(state);
                 TCPServerClientInfo clientInfo = this.AddSocket(client);
                 this.NewThread();
-                this.Interact(clientInfo); // TODO refactor interact rethrowing ex this removing from dictionary here;
-                client.Shutdown(SocketShutdown.Both);
-                this.RemoveSocket();
+                this.Interact(clientInfo);
+            }
+            catch (TCPServerInteractException ex) {
+                this.WatchDog(TCPServerMessages.ClientFail, this.Sockets[Thread.CurrentThread.ManagedThreadId]);
             }
             catch (ObjectDisposedException ex) {
                 this.WatchDog(TCPServerMessages.EndAccepting);
@@ -203,6 +206,8 @@ namespace TCPServer {
                 this.WatchDog(TCPServerMessages.AcceptFail);
             }
             finally {
+                client.Shutdown(SocketShutdown.Both);
+                this.RemoveSocket();
                 if (client != null)
                     client.Close();
             }
@@ -238,13 +243,7 @@ namespace TCPServer {
                 } while (keepAlive);
             }
             catch (Exception ex) {
-                this.WatchDog(TCPServerMessages.ClientFail, this.Sockets[Thread.CurrentThread.ManagedThreadId]);
-                // TODO: do it in better way on higher stack
-                if(this.Sockets[Thread.CurrentThread.ManagedThreadId]!= null)
-                {
-                    this.Sockets[Thread.CurrentThread.ManagedThreadId].Socket.Close();
-                    this.Sockets.Remove(Thread.CurrentThread.ManagedThreadId);
-                }
+                throw new TCPServerInteractException();
             }
         }
         private void GetObject<T>(TCPServerInteractEventArgs args) {

@@ -10,7 +10,8 @@ using System.Web.Script.Serialization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace System.Net.Sockets {
+namespace TCPServerClient
+{
     public enum TCPServerClientMessages
     {
         Undefined, Initialized, AddressFail, Connected, ConnectFail, ServerFail, NoHandler,
@@ -58,7 +59,7 @@ namespace System.Net.Sockets {
     public delegate void TCPServerClientMessageHandler(object sender, TCPServerClientMessageEventArgs args);
     public delegate void TCPServerClientInteractHandler(object sender, TCPServerClientInteractEventArgs args);
 
-    class TCPServerClient : IDisposable {
+    public class TCPServerClient : IDisposable {
         public event TCPServerClientInteractHandler ClientInteractEvent;
         public event TCPServerClientMessageHandler ClientMessageEvent;
         public IPEndPoint EndPoint { get; private set; }
