@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonInitialize = new System.Windows.Forms.Button();
+            this.buttonShowDesktop = new System.Windows.Forms.Button();
             this.buttonConnect = new System.Windows.Forms.Button();
             this.buttonDisconnect = new System.Windows.Forms.Button();
             this.groupBoxControls = new System.Windows.Forms.GroupBox();
@@ -63,20 +63,20 @@
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // buttonInitialize
+            // buttonShowDesktop
             // 
-            this.buttonInitialize.Location = new System.Drawing.Point(7, 19);
-            this.buttonInitialize.Name = "buttonInitialize";
-            this.buttonInitialize.Size = new System.Drawing.Size(112, 23);
-            this.buttonInitialize.TabIndex = 0;
-            this.buttonInitialize.Text = "Initialize";
-            this.buttonInitialize.UseVisualStyleBackColor = true;
-            this.buttonInitialize.Click += new System.EventHandler(this.buttonInitialize_Click);
+            this.buttonShowDesktop.Enabled = false;
+            this.buttonShowDesktop.Location = new System.Drawing.Point(6, 77);
+            this.buttonShowDesktop.Name = "buttonShowDesktop";
+            this.buttonShowDesktop.Size = new System.Drawing.Size(112, 23);
+            this.buttonShowDesktop.TabIndex = 0;
+            this.buttonShowDesktop.Text = "Show screen";
+            this.buttonShowDesktop.UseVisualStyleBackColor = true;
+            this.buttonShowDesktop.Click += new System.EventHandler(this.buttonShowDesktop_Click);
             // 
             // buttonConnect
             // 
-            this.buttonConnect.Enabled = false;
-            this.buttonConnect.Location = new System.Drawing.Point(7, 48);
+            this.buttonConnect.Location = new System.Drawing.Point(8, 19);
             this.buttonConnect.Name = "buttonConnect";
             this.buttonConnect.Size = new System.Drawing.Size(112, 23);
             this.buttonConnect.TabIndex = 1;
@@ -100,7 +100,7 @@
             this.groupBoxControls.Controls.Add(this.buttonLogout);
             this.groupBoxControls.Controls.Add(this.buttonLogin);
             this.groupBoxControls.Controls.Add(this.buttonDisconnect);
-            this.groupBoxControls.Controls.Add(this.buttonInitialize);
+            this.groupBoxControls.Controls.Add(this.buttonShowDesktop);
             this.groupBoxControls.Controls.Add(this.buttonConnect);
             this.groupBoxControls.Location = new System.Drawing.Point(300, 277);
             this.groupBoxControls.Name = "groupBoxControls";
@@ -123,7 +123,7 @@
             // buttonLogin
             // 
             this.buttonLogin.Enabled = false;
-            this.buttonLogin.Location = new System.Drawing.Point(6, 77);
+            this.buttonLogin.Location = new System.Drawing.Point(7, 48);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(112, 23);
             this.buttonLogin.TabIndex = 3;
@@ -193,7 +193,7 @@
             this.textBoxBufferSize.Name = "textBoxBufferSize";
             this.textBoxBufferSize.Size = new System.Drawing.Size(108, 20);
             this.textBoxBufferSize.TabIndex = 6;
-            this.textBoxBufferSize.Text = "Default (1024)";
+            this.textBoxBufferSize.Text = "Default (65535)";
             // 
             // labelPort
             // 
@@ -369,7 +369,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button buttonInitialize;
+        private System.Windows.Forms.Button buttonShowDesktop;
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.Button buttonDisconnect;
         private System.Windows.Forms.GroupBox groupBoxControls;

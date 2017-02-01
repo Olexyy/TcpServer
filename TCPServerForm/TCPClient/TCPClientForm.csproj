@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DesktopForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DesktopForm.Designer.cs">
+      <DependentUpon>DesktopForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MessengerClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,6 +63,9 @@
     <Compile Include="TCPClientForm.Designer.cs">
       <DependentUpon>TCPClientForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DesktopForm.resx">
+      <DependentUpon>DesktopForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

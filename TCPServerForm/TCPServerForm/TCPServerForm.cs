@@ -46,7 +46,7 @@ namespace TCPServer
             if (this.ValidateInput())
             {
                 int port = (this.textBoxPort.Text == "Random") ? 0 : Convert.ToInt32(this.textBoxPort.Text);
-                int buffer = (this.textBoxBuffer.Text == "Default (1024)") ? 1024 : Convert.ToInt32(this.textBoxBuffer.Text);
+                int buffer = (this.textBoxBuffer.Text == "Default (65535)") ? 65535 : Convert.ToInt32(this.textBoxBuffer.Text);
                 string ipAddress = (this.textBoxIpAddress.Text == "Any") ? "0.0.0.0" : this.textBoxIpAddress.Text;
                 uint socketLimit = (this.textBoxSocketLimit.Text == "None") ? 0 : Convert.ToUInt32(this.textBoxSocketLimit.Text);
                 this.Server.Initialize(port, ipAddress, buffer, socketLimit);
@@ -100,7 +100,7 @@ namespace TCPServer
                 if (number <= 0)
                     return false;
             }
-            if (this.textBoxBuffer.Text != "Default (1024)")
+            if (this.textBoxBuffer.Text != "Default (65535)")
             {
                 if (!regex.Match(this.textBoxBuffer.Text).Success)
                     return false;

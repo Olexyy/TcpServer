@@ -4,20 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
+using System.Net.Mail;
+using System.Net;
 
 namespace TCPServer
 {
-    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group }
+    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group,
+        cast, cast_success, cast_end, cast_end_success, mail, mail_success }
     public class Message
     {
         public MessageTypes MessageType { get; set; }
         public User User { get; set; }
         public string Text { get; set; }
-        public Message(MessageTypes messageType, User User, string text = "")
+        public byte[] BinaryData { get; set; }
+        public Message(MessageTypes messageType, User User, string text = "", byte[] binaryData = null)
         {
             this.MessageType = messageType;
             this.Text = text;
             this.User = User;
+            this.BinaryData = (binaryData == null) ? new byte[1] : binaryData;
         }
         public Message() { }
     }
@@ -127,6 +132,39 @@ namespace TCPServer
                     else
                         args.KeepAlive = false;
                     break;
+                case MessageTypes.cast:
+                    if (DbUser != null && this.LoggedIn(DbUser))
+                    {
+                        this.PushDataToGroup(MessageTypes.cast, DbUser, server, message.BinaryData);
+                        args.Object = new Message(MessageTypes.cast_success, DbUser);
+                        args.KeepAlive = true;
+                        args.CallBack = true;
+                    }
+                    else
+                        args.KeepAlive = false;
+                    break;
+                case MessageTypes.cast_end:
+                    if (DbUser != null && this.LoggedIn(DbUser))
+                    {
+                        this.PushMessageToGroup(MessageTypes.cast_end, DbUser, server);
+                        args.Object = new Message(MessageTypes.cast_end_success, DbUser);
+                        args.KeepAlive = true;
+                        args.CallBack = true;
+                    }
+                    else
+                        args.KeepAlive = false;
+                    break;
+                case MessageTypes.mail:
+                    if (DbUser != null && this.LoggedIn(DbUser))
+                    {
+                        this.Mail();
+                        args.Object = new Message(MessageTypes.mail_success, DbUser);
+                        args.KeepAlive = true;
+                        args.CallBack = true;
+                    }
+                    else
+                        args.KeepAlive = false;
+                    break;
                 default:
                     args.KeepAlive = false;
                     break;
@@ -172,6 +210,19 @@ namespace TCPServer
                 this.LoggedUsers.Where(i => i.Value.Group == user.Group).ToList().ForEach(i => this.PushMessageToUser(type, i.Key, user, server, message));
             }
         }
+        private void PushDataToGroup(MessageTypes type, User user, TCPServer server, byte[] binaryData = null)
+        {
+            lock (this.locker)
+            {
+                this.LoggedUsers.Where(i => i.Value.Group == user.Group).ToList().ForEach(i => this.PushDataToUser(type, i.Key, user, server, binaryData));
+            }
+        }
+        private void PushDataToUser(MessageTypes type, TCPServerClientInfo clientInfo, User user, TCPServer server, byte[] binaryData = null)
+        {
+            Message msg = new Message(type, user, null, binaryData);
+            TCPServerInteractEventArgs args = new TCPServerInteractEventArgs(msg, clientInfo, false, false);
+            server.Send(args);
+        }
         private void PushMessageToUser(MessageTypes type, TCPServerClientInfo clientInfo, User user, TCPServer server, string message = "" )
         {
             Message msg = new Message(type, user, message);
@@ -181,6 +232,23 @@ namespace TCPServer
         private string CountGroup(string group)
         {
             return this.LoggedUsers.Where(i => i.Value.Group == group).Count().ToString();
+        }
+        private void Mail()
+        {
+            using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587))
+            {
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential("testtcpserver@gmail.com", "zaq1ZAQ!");
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                MailMessage message = new MailMessage(
+                "testtcpserver@gmail.com",  // From field
+                "testtcpserver@gmail.com",  // Recipient field
+                "Screen cast",              // Subject of the email message
+                "Screen cast init."         // Email message body
+                );
+                client.Send(message);
+            }
         }
     }
 }

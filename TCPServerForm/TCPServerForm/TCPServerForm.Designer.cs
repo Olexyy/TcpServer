@@ -178,7 +178,7 @@
             this.textBoxBuffer.Name = "textBoxBuffer";
             this.textBoxBuffer.Size = new System.Drawing.Size(108, 20);
             this.textBoxBuffer.TabIndex = 6;
-            this.textBoxBuffer.Text = "Default (1024)";
+            this.textBoxBuffer.Text = "Default (65535)";
             // 
             // labelSocketLimit1
             // 

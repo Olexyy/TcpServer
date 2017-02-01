@@ -8,17 +8,20 @@ using TCPServerClient;
 
 namespace TCPServerClient
 {
-    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group }
+    public enum MessageTypes { login, login_success, post, post_success, logout, logout_success, group,
+        cast, cast_success, cast_end, cast_end_success, mail, mail_success }
     public class Message
     {
         public MessageTypes MessageType { get; set; }
         public User User { get; set; }
         public string Text { get; set; }
-        public Message(MessageTypes messageType, User User, string text = "")
+        public byte[] BinaryData { get; set; }
+        public Message(MessageTypes messageType, User User, string text = "", byte[] binaryData = null)
         {
             this.MessageType = messageType;
             this.Text = text;
             this.User = User;
+            this.BinaryData =  (binaryData == null)? new byte[1]:binaryData;
         }
         public Message() { }
     }
@@ -49,6 +52,7 @@ namespace TCPServerClient
     }
     public class MessengerClient
     {
+        public bool IsStreamer { get; set; }
         private object locker;
         public bool LoggedIn { get; private set; }
         public User User { get; private set; }
@@ -73,6 +77,18 @@ namespace TCPServerClient
                     {
                         this.LoggedIn = false;
                         this.User = null;
+                    }
+                    break;
+                case MessageTypes.cast_success:
+                    lock (this.locker)
+                    {
+                        this.IsStreamer = true;
+                    }
+                    break;
+                case MessageTypes.cast_end_success:
+                    lock (this.locker)
+                    {
+                        this.IsStreamer = false;
                     }
                     break;
                 default:
